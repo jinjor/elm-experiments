@@ -8,6 +8,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Models exposing (..)
 
+-- MODEL
+
 type alias Model =
   { items : List Doc
   , order : OrderType
@@ -16,13 +18,14 @@ type alias Model =
 type alias Item = String
 type OrderType = AtoZ | ZtoA
 
-
 init : Model
 init =
   { items = []
   , order = AtoZ
   , selected = Nothing
   }
+
+-- UPDATE
 
 type Action
   = SetItems (List Doc)
@@ -51,6 +54,7 @@ update action model =
 setItems : List Doc -> Action
 setItems = SetItems
 
+-- VIEW
 
 view : Signal.Address Action -> Model -> Html
 view address model =

@@ -14,6 +14,7 @@ type alias DocDetail =
   }
 
 -- XHR stub
+
 stub : Float -> a -> Task Http.Error a
 stub delay a = Task.sleep delay `Task.andThen` (always <| Task.succeed a)
 

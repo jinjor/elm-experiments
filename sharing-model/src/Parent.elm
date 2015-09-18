@@ -11,6 +11,7 @@ import Models exposing (..)
 import Selector
 import Detail
 
+-- MODEL
 
 type alias Model =
   { selector : Selector.Model
@@ -26,6 +27,8 @@ init = (
   , docs = []
   , errors = []
   }, Effects.task (Task.succeed Init))
+
+-- UPDATE
 
 type Action
   = Init
@@ -98,6 +101,8 @@ update action model =
       ({ model |
         errors <- s :: model.errors
       }, Effects.none)
+
+-- VIEW
 
 view : Signal.Address Action -> Model -> Html
 view address model =

@@ -12,6 +12,7 @@ import Http
 import Models exposing (..)
 
 -- MODEL
+
 type alias Model =
   { cache : Dict String LoadingState
   , current : Maybe Doc
@@ -27,6 +28,7 @@ init =
   }
 
 -- UPDATE
+
 type Action
   = ShowDoc Doc
   | CacheDoc Doc DocDetail
@@ -69,6 +71,7 @@ showDoc : Doc -> Action
 showDoc = ShowDoc
 
 -- VIEW
+
 view : Signal.Address Action -> Model -> Html
 view address model =
   let
