@@ -13,9 +13,12 @@ import Models exposing (..)
 
 -- MODEL
 type alias Model =
-  { cache : Dict String DocDetail
+  { cache : Dict String LoadingState
   , current : Maybe Doc
   }
+type LoadingState
+  = Loading
+  | Loaded DocDetail
 
 init : Model
 init =
@@ -44,17 +47,20 @@ update action model =
           }
       in
         case Dict.get doc.key model.cache of
-          Just content ->
+          Just _ ->
             (newModel, Effects.none)
           Nothing ->
             let
               eff1 = toEffect (CacheDoc doc) (getDocument doc)
-              eff2 = Effects.task (Task.succeed (ShowDoc doc))
+              eff2 =
+                Effects.task (Task.succeed (ShowDoc doc))
             in
-              (newModel, Effects.batch [eff1, eff2])
+              ({ newModel |
+                cache <- Dict.insert doc.key Loading model.cache
+              }, Effects.batch [eff1, eff2])
     CacheDoc doc content ->
       ({ model |
-        cache <- Dict.insert doc.key content model.cache
+        cache <- Dict.insert doc.key (Loaded content) model.cache
       }, Effects.none)
     Error e ->
       (model, Effects.none)
@@ -70,8 +76,9 @@ view address model =
       case model.current of
         Just doc ->
           case Dict.get doc.key model.cache of
-            Just detail -> pre [] [ text detail.text ]
-            Nothing -> div [] [ text <| "loading " ++ doc.name ++ "..." ]
+            Just Loading -> div [] [ text <| "loading " ++ doc.name ++ "..." ]
+            Just (Loaded detail) -> pre [] [ text detail.text ]
+            Nothing -> div [] [ text "Please select document." ]
         Nothing -> div [] [ text "Please select document." ]
   in
     div [ style [("word-wrap", "break-word")]] [ content ]
